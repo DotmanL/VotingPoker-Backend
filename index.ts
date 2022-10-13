@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+const express = require("express");
 const app = express();
 const http = require('http').Server(app);
 const cors = require('cors');
@@ -26,7 +26,7 @@ socketIO.on('connection', (socket) => {
   });
 });
 
-app.get('/api', (req: Request, res: Response) => {
+app.get('/api', (req, res) => {
   res.json({
     message: 'Hello world',
   });
