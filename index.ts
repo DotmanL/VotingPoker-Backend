@@ -3,7 +3,7 @@ const app = express();
 const http = require('http').Server(app);
 const cors = require('cors');
 const PORT = process.env.PORT || 4000;
-import { connectDB } from './src/config/database'
+const { connectDB } = require('./src/config/database')
 
 
 if (process.env.NODE_ENV !== 'production') require('dotenv').config();
