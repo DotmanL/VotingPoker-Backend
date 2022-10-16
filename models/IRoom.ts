@@ -1,5 +1,5 @@
 export interface IRoom {
-  id: string,
+  roomId: string,
   name: string;
-  votingSystem: Number;
+  votingSystem: number;
 }

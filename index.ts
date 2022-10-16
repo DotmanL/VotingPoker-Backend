@@ -1,10 +1,10 @@
-const express = require("express");
-const app = express();
-const http = require('http').Server(app);
-const cors = require('cors');
-const PORT = process.env.PORT || 4000;
+import express, { Request, Response } from "express";
+import cors from 'cors';
 import { connectDB } from './src/config/database'
 
+const PORT = process.env.PORT || 4000;
+const app = express();
+const http = require('http').Server(app);
 
 if (process.env.NODE_ENV !== 'production') require('dotenv').config();
 
@@ -36,7 +36,7 @@ socketIO.on('connection', (socket) => {
   });
 });
 
-app.get('/api', (req, res) => {
+app.get('/api', (req: Request, res: Response) => {
   res.json({
     message: 'Hello world',
   });

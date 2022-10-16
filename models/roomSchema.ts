@@ -10,7 +10,7 @@ const roomSchema = new Schema<IRoom>({
         maxlength: 32,
         unique: true
     },
-    id: {
+    roomId: {
         type: String,
         required: true
     },
