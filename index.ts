@@ -51,6 +51,7 @@ socketIO.on('connection', (socket) => {
   socket.on('disconnect', () => {
     users = users.filter((user) => user.socketId !== socket.id);
     socketIO.emit('userResponse', users);
+    console.log('user disconnected');
     socket.disconnect();
   });
 });
