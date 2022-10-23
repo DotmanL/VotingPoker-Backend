@@ -1,6 +1,8 @@
 import express, { Request, Response } from "express";
 import cors from 'cors';
 import { connectDB } from './src/config/database'
+import { IUser } from "./models/IUser";
+import { IUserDetails } from "./models/IUserDetails";
 
 const PORT = process.env.PORT || 4000;
 const app = express();
@@ -22,17 +24,34 @@ const socketIO = require('socket.io')(http, {
   }
 });
 
-socketIO.on('connection', (socket) => {
-  console.log(`${socket.id} user connected!`);
+let users: any[] = []
 
+socketIO.on('connection', (socket) => {
+
+  socket.on('user', (data: IUserDetails) => {
+    users.push(data);
+    const roomUsers = users.filter((user) => user.roomId === data.roomId)
+    socket.join(data.roomId)
+    socketIO.to(data.roomId).emit('userResponse', roomUsers);
+  })
+
+
+  socket.on('isVotedState', (data: IUserDetails) => {
+    const userIndex = users.findIndex((user) => user.userId === data.userId)
+    users[userIndex].votedState = data.votedState
+    socketIO.to(data.roomId).emit('isUserVotedResponse', users);
+    socketIO.to(data.roomId).emit('isVotedResponse', data);
+  })
+
+  //TODO: work on this for reveal all votes
   socket.on('votes', (data) => {
-    console.log(data, "votes response");
     socketIO.emit('votesResponse', data);
   });
 
-
   socket.on('disconnect', () => {
-    console.log(' A user disconnected');
+    users = users.filter((user) => user.socketId !== socket.id);
+    socketIO.emit('userResponse', users);
+    socket.disconnect();
   });
 });
 
