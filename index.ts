@@ -29,7 +29,12 @@ let users: any[] = []
 socketIO.on('connection', (socket) => {
   console.log(`${socket.id} user just connected!`);
   socket.on('user', (data: IUserDetails) => {
-    users.push(data);
+    const existingUser = users.find((user) => { user.userId === data.userId && user.roomId === data.roomId })
+    if (existingUser) {
+      return { error: "user already exists" }
+    } else {
+      users.push(data);
+    }
     const roomUsers = users.filter((user) => user.roomId === data.roomId)
     socket.join(data.roomId)
     socketIO.to(data.roomId).emit('userResponse', roomUsers);
