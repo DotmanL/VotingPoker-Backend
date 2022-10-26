@@ -28,8 +28,10 @@ let users: any[] = []
 
 socketIO.on('connection', (socket) => {
   console.log(`${socket.id} user just connected!`);
+
+
   socket.on('user', (data: IUserDetails) => {
-    const existingUser = users.find((user) => { user.userId === data.userId && user.roomId === data.roomId })
+    const existingUser = users.find((user) => { user.userId === data.userId })
     if (existingUser) {
       return { error: "user already exists" }
     } else {
