@@ -31,6 +31,8 @@ socketIO.on('connection', (socket) => {
 
 
   socket.on('user', (data: IUserDetails) => {
+    console.log(data, 'userDetailsBackend');
+
     const existingUser = users.find((user) => { user.userId === data.userId })
     if (existingUser) {
       return { error: "user already exists" }
