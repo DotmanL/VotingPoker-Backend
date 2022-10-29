@@ -30,7 +30,6 @@ let users: any[] = []
 socketIO.on('connection', (socket) => {
   console.log(`${socket.id} user just connected!`);
 
-
   socket.on('user', (data: IUserDetails) => {
     socket.userId = data.userId
     const existingUser = users.find((user) => { user.userId === data.userId })
@@ -46,15 +45,10 @@ socketIO.on('connection', (socket) => {
 
 
   socket.on('isVotedState', (data: IUserDetails) => {
-    // const userIndex = users.findIndex((user) => user.userId === data.userId)
-    // users[userIndex].votedState = data.votedState
     socketIO.to(data.roomId).emit('isVotedResponse', data);
-    // socketIO.to(data.roomId).emit('isUserVotedResponse', users);
   })
 
   socket.on('isUserVoted', (data: IUserDetails[]) => {
-    console.log(data, 'isUSerVoted');
-
     socketIO.emit('isUserVotedResponse', data);
   })
 
