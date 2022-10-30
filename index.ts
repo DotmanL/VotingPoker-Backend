@@ -39,7 +39,8 @@ socketIO.on('connection', (socket) => {
       users.push(data);
     }
     const roomUsers = users.filter((user) => user.roomId === data.roomId)
-    socket.join(data.roomId)
+    socket.join(data.roomId);
+    socketIO.to(data.roomId).emit('welcome', { userId: data.userId })
     socketIO.to(data.roomId).emit('userResponse', roomUsers);
   })
 
@@ -52,7 +53,7 @@ socketIO.on('connection', (socket) => {
     socketIO.emit('isUserVotedResponse', data);
   })
 
-  //TODO: work on this for reveal all votes
+  //TODO: filter votes by roomId
   socket.on('votes', (data) => {
     socketIO.emit('votesResponse', data);
   });
