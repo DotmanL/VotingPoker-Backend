@@ -24,8 +24,7 @@ const socketIO = require('socket.io')(http, {
   }
 });
 
-let users: any[] = []
-// let userIds = {}
+let users: IUserDetails[] = []
 
 socketIO.on('connection', (socket) => {
   console.log(`${socket.id} user just connected!`);
@@ -54,7 +53,7 @@ socketIO.on('connection', (socket) => {
   })
 
   socket.on('votes', (data) => {
-    socketIO.to(data.roomId).emit('votesResponse', data.allVote);
+    socketIO.to(data.roomId).emit('votesResponse', data.allVotes);
   });
 
   socket.on('disconnect', () => {
