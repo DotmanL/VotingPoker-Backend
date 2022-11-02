@@ -53,9 +53,8 @@ socketIO.on('connection', (socket) => {
     socketIO.emit('isUserVotedResponse', data);
   })
 
-  //TODO: filter votes by roomId
   socket.on('votes', (data) => {
-    socketIO.emit('votesResponse', data);
+    socketIO.to(data.roomId).emit('votesResponse', data.allVote);
   });
 
   socket.on('disconnect', () => {
