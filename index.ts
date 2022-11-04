@@ -30,6 +30,7 @@ socketIO.on('connection', (socket) => {
   console.log(`${socket.id} user just connected!`);
 
   socket.on('user', (data: IUserDetails) => {
+    console.log(`${data.name} user just connected!`);
     socket.userId = data.userId
     const existingUser = users.find((user) => { user.userId === data.userId })
     if (existingUser) {
@@ -42,7 +43,6 @@ socketIO.on('connection', (socket) => {
     socketIO.to(data.roomId).emit('welcome', { userId: data.userId })
     socketIO.to(data.roomId).emit('userResponse', roomUsers);
   })
-
 
   socket.on('isVotedState', (data: IUserDetails) => {
     socketIO.to(data.roomId).emit('isVotedResponse', data);
