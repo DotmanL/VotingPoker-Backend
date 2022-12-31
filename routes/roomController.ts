@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { body } from "express-validator";
-import { IRoom } from "../models/IRoom";
+import { IRoom } from "../interfaces/IRoom";
 import { RoomSchema } from "../models/roomSchema";
 
 const router = express.Router();
