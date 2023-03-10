@@ -77,18 +77,18 @@ socketIO.on("connection", (socket) => {
   // TODO: can't reset vote on leaving room, only do when vote session is completed.
   // implement many to many relationship between each room and userId and userVote.
 
-  socket.on("leaveRoom", async (data) => {
-    // try {
-    //   const response = await axios.put(
-    //     getBaseUrl(`user/resetVote/${data.userId}`)
-    //   );
-    //   console.log("API response:", response.data);
-    //   socket.emit("leaveRoomResponse", response.data);
-    // } catch (error) {
-    //   console.error("API request failed:", error);
-    // }
-    console.log(`${data.userName} just left the room!`);
-  });
+  // socket.on("leaveRoom", async (data) => {
+  // try {
+  //   const response = await axios.put(
+  //     getBaseUrl(`user/resetVote/${data.userId}`)
+  //   );
+  //   console.log("API response:", response.data);
+  //   socket.emit("leaveRoomResponse", response.data);
+  // } catch (error) {
+  //   console.error("API request failed:", error);
+  // }
+  //   console.log(`${data.userName} just left the room!`);
+  // });
 
   socket.on("disconnect", () => {
     users = users.filter((user) => user._id !== socket.userId);
