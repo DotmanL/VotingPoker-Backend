@@ -6,8 +6,23 @@ import { IUserDetails } from "./interfaces/IUserDetails";
 const PORT = process.env.PORT || 4001;
 const app = express();
 const http = require("http").Server(app);
+const axios = require("axios");
 
 if (process.env.NODE_ENV !== "production") require("dotenv").config();
+
+export const getBaseUrl = (route: string) => {
+  let url;
+  switch (process.env.NODE_ENV) {
+    case "production":
+      url = `https://votingpokerapi.herokuapp.com/api/${route}/`;
+      break;
+    case "development":
+    default:
+      url = `http://localhost:4001/api/${route}/`;
+  }
+
+  return url;
+};
 
 app.use(express.json());
 app.use(cors());
@@ -57,6 +72,22 @@ socketIO.on("connection", (socket) => {
 
   socket.on("votes", (data) => {
     socketIO.to(data.roomId).emit("votesResponse", data.allVotes);
+  });
+
+  // TODO: can't reset vote on leaving room, only do when vote session is completed.
+  // implement many to many relationship between each room and userId and userVote.
+
+  socket.on("leaveRoom", async (data) => {
+    // try {
+    //   const response = await axios.put(
+    //     getBaseUrl(`user/resetVote/${data.userId}`)
+    //   );
+    //   console.log("API response:", response.data);
+    //   socket.emit("leaveRoomResponse", response.data);
+    // } catch (error) {
+    //   console.error("API request failed:", error);
+    // }
+    console.log(`${data.userName} just left the room!`);
   });
 
   socket.on("disconnect", () => {
