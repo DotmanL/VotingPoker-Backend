@@ -31,6 +31,7 @@ connectDB();
 
 app.use("/api/room", require("./routes/roomController"));
 app.use("/api/user", require("./routes/userController"));
+app.use("/api/issues", require("./routes/issuesController"));
 
 const socketIO = require("socket.io")(http, {
   cors: {
@@ -41,10 +42,10 @@ const socketIO = require("socket.io")(http, {
 let users: IUserDetails[] = [];
 
 socketIO.on("connection", (socket) => {
-  console.log(`${socket.id} user just connected!`);
+  console.log(`${socket.id} just connected!`);
 
   socket.on("user", (data: IUserDetails) => {
-    console.log(`${data.name} user just connected!`);
+    console.log(`${data.name} just connected!`);
     socket.userId = data._id;
     //find user and set isConnected state to true and save to db, prevent same user by comparing db data and if is connectee is true already
 
