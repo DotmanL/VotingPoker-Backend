@@ -78,57 +78,64 @@ router.put("/updateIssueOrder/:issueId", async (req, res) => {
     }
 
     const roomId = issueToUpdate.roomId;
-
     const issuesInRoom = await IssueSchema.find({ roomId });
 
     issuesInRoom.sort((a, b) => a.order! - b.order!);
 
+    const oldOrder = issueToUpdate.order!;
+    const direction = newOrder > oldOrder ? -1 : 1;
+
+    for (const issue of issuesInRoom) {
+      if (issue.order! <= oldOrder && issue.order! >= newOrder) {
+        issue.order! += direction;
+        await issue.save();
+      } else if (issue.order! === newOrder && issue._id !== issueToUpdate._id) {
+        issue.order! = oldOrder;
+        await issue.save();
+      }
+    }
+
     issueToUpdate.order = newOrder;
     await issueToUpdate.save();
 
-    let order = 1;
-    for (const issue of issuesInRoom) {
-      if (issue._id === issueToUpdate._id) {
-        continue;
-      }
-      if (order === newOrder) {
-        order++;
-      }
-      issue.order = order;
-      await issue.save();
-      order++;
-    }
+    const updatedIssuesInRoom = await IssueSchema.find({ roomId });
 
-    res.send({ message: "Issue order updated successfully" });
+    return res.status(200).json(updatedIssuesInRoom);
   } catch (err) {
     console.error(err);
     res.status(500).send({ error: "Server error" });
   }
 });
 
-router.delete("/deleteIssue/:_id", async (req: Request, res: Response) => {
+router.delete("/deleteIssues", async (req: Request, res: Response) => {
   try {
-    const result = await IssueSchema.deleteOne({ _id: req.params._id });
-    if (result.deletedCount === 0) {
-      return res.status(404).json({ message: "Issue not found" });
+    const { issueIds } = req.body;
+
+    for (const issueId of issueIds) {
+      const issueToDelete = await IssueSchema.findById(issueId);
+
+      if (!issueToDelete) {
+        return res.status(404).send({ error: "Issue does not exist" });
+      }
+
+      await issueToDelete.delete();
+      const remainingIssues = await IssueSchema.find({
+        roomId: issueToDelete.roomId
+      }).sort("order");
+
+      let currentOrder = 1;
+      for (const issue of remainingIssues) {
+        if (issue.order !== currentOrder) {
+          const issueNameStripped = issue.name.slice(0, -1);
+          issue.order = currentOrder;
+          issue.name = issueNameStripped + "" + currentOrder;
+          await issue.save();
+        }
+        currentOrder++;
+      }
     }
-    return res.status(204).send();
-  } catch (error) {
-    console.error("Error deleting Issue", error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
-});
 
-router.delete("/deleteIssues/:roomId", async (req: Request, res: Response) => {
-  const roomId = req.params.roomId;
-  try {
-    const result = await IssueSchema.deleteMany({ roomId });
-
-    if (result.deletedCount === 0) {
-      return res.status(404).json({ message: "Issues not found" });
-    }
-
-    return res.status(204).send();
+    res.sendStatus(204);
   } catch (error) {
     console.error("Error deleting issues", error);
     return res.status(500).json({ message: "Internal server error" });

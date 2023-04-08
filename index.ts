@@ -75,6 +75,10 @@ socketIO.on("connection", (socket) => {
     socketIO.to(data.roomId).emit("votesResponse", data.allVotes);
   });
 
+  socket.on("orderUpdate", (data) => {
+    socketIO.to(data.roomId).emit("orderUpdateResponse", data);
+  });
+
   // TODO: can't reset vote on leaving room, only do when vote session is completed.
   // implement many to many relationship between each room and userId and userVote.
 
