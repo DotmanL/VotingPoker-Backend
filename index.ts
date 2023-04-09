@@ -44,19 +44,25 @@ let users: IUserDetails[] = [];
 socketIO.on("connection", (socket) => {
   console.log(`${socket.id} just connected!`);
 
+  const socketUsers = {};
+
   socket.on("user", (data: IUserDetails) => {
     console.log(`${data.name} just connected!`);
-    socket.userId = data._id;
-    //find user and set isConnected state to true and save to db, prevent same user by comparing db data and if is connectee is true already
+    const userId = data._id!;
+    socket.userId = userId;
 
-    // Logic not working, doesn't prvent jjoing in the same browser
+    if (socketUsers[userId]) {
+      socket = socketUsers[userId];
+    } else {
+      socketUsers[userId] = socket;
+    }
+
     const existingUser = users.find((user) => user._id === data._id);
 
-    if (existingUser) {
-      return { error: "user already exists" };
-    } else {
+    if (!existingUser) {
       users.push(data);
     }
+
     const roomUsers = users.filter((user) => user.roomId === data.roomId);
     socket.join(data.roomId);
     socketIO.to(data.roomId).emit("welcome", { userId: data._id });
