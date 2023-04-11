@@ -78,11 +78,17 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("votes", (data) => {
-    socketIO.to(data.roomId).emit("votesResponse", data.allVotes);
+    socketIO.to(data.roomId).emit("votesResponse", data);
   });
 
   socket.on("orderUpdate", (data) => {
     socketIO.to(data.roomId).emit("orderUpdateResponse", data);
+  });
+
+  socket.on("isIssuesSidebarOpen", (data) => {
+    console.log(data, "isIssuesSidebarOpen");
+
+    socketIO.to(data.roomId).emit("isIssuesSidebarOpenResponse", data);
   });
 
   // TODO: can't reset vote on leaving room, only do when vote session is completed.

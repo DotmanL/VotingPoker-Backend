@@ -45,14 +45,52 @@ router.get("/getAllIssues/:roomId", async (req: Request, res: Response) => {
   }
 });
 
+router.get("/getIssue/:_id", async (req: Request, res: Response) => {
+  try {
+    const issue = await IssueSchema.findOne({
+      _id: req.params._id
+    });
+
+    if (!issue) {
+      return res.status(404).send({ message: "Issue not found" });
+    }
+    return res.json(issue);
+  } catch (err: any) {
+    console.error(err.message);
+    return res.status(500).send({ message: "Internal server error" });
+  }
+});
+
 router.put("/updateIssue/:_id", async (req, res) => {
   const id = req.params._id;
-  const { storyPoints, name, isVoted } = req.body;
+  const { storyPoints, name, isVoted, isActive } = req.body;
 
   try {
     const updatedIssue: IIssue | null = await IssueSchema.findByIdAndUpdate(
       id,
-      { storyPoints, name, isVoted },
+      { storyPoints, name, isVoted, isActive },
+      { new: true }
+    );
+
+    if (updatedIssue) {
+      return res.status(200).json({ updatedIssue });
+    } else {
+      return res.status(404).json({ message: "Issue not found" });
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Internal Server error" });
+  }
+});
+
+router.put("/updateIssueStatus/:_id", async (req, res) => {
+  const id = req.params._id;
+  const { isActive } = req.body;
+
+  try {
+    const updatedIssue: IIssue | null = await IssueSchema.findByIdAndUpdate(
+      id,
+      { isActive },
       { new: true }
     );
 

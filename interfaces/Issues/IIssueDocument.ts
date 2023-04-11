@@ -8,4 +8,5 @@ export interface IIssueDocument extends Document {
   storyPoints?: number;
   order?: number;
   isVoted?: boolean;
+  isActive?: boolean;
 }

@@ -29,6 +29,10 @@ const issueSchema = new Schema<IIssue>({
   isVoted: {
     type: Boolean,
     default: false
+  },
+  isActive: {
+    type: Boolean,
+    default: false
   }
 });
 

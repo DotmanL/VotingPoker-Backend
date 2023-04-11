@@ -8,4 +8,5 @@ export interface IIssue extends IBase {
   storyPoints?: number;
   order?: number;
   isVoted?: boolean;
+  isActive?: boolean;
 }
