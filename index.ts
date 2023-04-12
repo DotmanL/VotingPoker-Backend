@@ -48,18 +48,22 @@ socketIO.on("connection", (socket) => {
 
   socket.on("user", (data: IUserDetails) => {
     console.log(`${data.name} just connected!`);
-    const userId = data._id!;
-    socket.userId = userId;
 
-    if (socketUsers[userId]) {
-      socket = socketUsers[userId];
+    const { _id: userId, roomId: roomId } = data;
+    socket.userId = userId!;
+    socket.roomId = roomId;
+
+    if (socketUsers[userId!]) {
+      socket = socketUsers[userId!];
     } else {
-      socketUsers[userId] = socket;
+      socketUsers[userId!] = socket;
     }
 
-    const existingUser = users.find((user) => user._id === data._id);
+    const existingUserInRoom = users.some(
+      (user) => user._id === data._id && user.roomId === data.roomId
+    );
 
-    if (!existingUser) {
+    if (!existingUserInRoom) {
       users.push(data);
     }
 
@@ -78,7 +82,7 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("votes", (data) => {
-    socketIO.to(data.roomId).emit("votesResponse", data);
+    socketIO.to(data.roomId).emit("votesResponse", data.allVotes);
   });
 
   socket.on("orderUpdate", (data) => {
@@ -86,9 +90,12 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("isIssuesSidebarOpen", (data) => {
-    console.log(data, "isIssuesSidebarOpen");
-
     socketIO.to(data.roomId).emit("isIssuesSidebarOpenResponse", data);
+  });
+
+  socket.on("isActiveCard", (data) => {
+    console.log(data, "isActiveCardOpenResponse");
+    socketIO.to(data.roomId).emit("isActiveCardOpenResponse", data);
   });
 
   // TODO: can't reset vote on leaving room, only do when vote session is completed.
@@ -108,7 +115,9 @@ socketIO.on("connection", (socket) => {
   // });
 
   socket.on("disconnect", () => {
-    users = users.filter((user) => user._id !== socket.userId);
+    users = users.filter(
+      (user) => !(user._id === socket.userId && user.roomId === socket.roomId)
+    );
     socketIO.emit("userResponse", users);
     console.log("user disconnected");
     socket.disconnect();
