@@ -31,6 +31,7 @@ connectDB();
 
 app.use("/api/room", require("./routes/roomController"));
 app.use("/api/user", require("./routes/userController"));
+app.use("/api/issues", require("./routes/issuesController"));
 
 const socketIO = require("socket.io")(http, {
   cors: {
@@ -41,21 +42,31 @@ const socketIO = require("socket.io")(http, {
 let users: IUserDetails[] = [];
 
 socketIO.on("connection", (socket) => {
-  console.log(`${socket.id} user just connected!`);
+  console.log(`${socket.id} just connected!`);
+
+  const socketUsers = {};
 
   socket.on("user", (data: IUserDetails) => {
-    console.log(`${data.name} user just connected!`);
-    socket.userId = data._id;
-    //find user and set isConnected state to true and save to db, prevent same user by comparing db data and if is connectee is true already
+    console.log(`${data.name} just connected!`);
 
-    // Logic not working, doesn't prvent jjoing in the same browser
-    const existingUser = users.find((user) => user._id === data._id);
+    const { _id: userId, roomId: roomId } = data;
+    socket.userId = userId!;
+    socket.roomId = roomId;
 
-    if (existingUser) {
-      return { error: "user already exists" };
+    if (socketUsers[userId!]) {
+      socket = socketUsers[userId!];
     } else {
+      socketUsers[userId!] = socket;
+    }
+
+    const existingUserInRoom = users.some(
+      (user) => user._id === data._id && user.roomId === data.roomId
+    );
+
+    if (!existingUserInRoom) {
       users.push(data);
     }
+
     const roomUsers = users.filter((user) => user.roomId === data.roomId);
     socket.join(data.roomId);
     socketIO.to(data.roomId).emit("welcome", { userId: data._id });
@@ -72,6 +83,19 @@ socketIO.on("connection", (socket) => {
 
   socket.on("votes", (data) => {
     socketIO.to(data.roomId).emit("votesResponse", data.allVotes);
+  });
+
+  socket.on("orderUpdate", (data) => {
+    socketIO.to(data.roomId).emit("orderUpdateResponse", data);
+  });
+
+  socket.on("isIssuesSidebarOpen", (data) => {
+    socketIO.to(data.roomId).emit("isIssuesSidebarOpenResponse", data);
+  });
+
+  socket.on("isActiveCard", (data) => {
+    console.log(data, "isActiveCardOpenResponse");
+    socketIO.to(data.roomId).emit("isActiveCardOpenResponse", data);
   });
 
   // TODO: can't reset vote on leaving room, only do when vote session is completed.
@@ -91,7 +115,9 @@ socketIO.on("connection", (socket) => {
   // });
 
   socket.on("disconnect", () => {
-    users = users.filter((user) => user._id !== socket.userId);
+    users = users.filter(
+      (user) => !(user._id === socket.userId && user.roomId === socket.roomId)
+    );
     socketIO.emit("userResponse", users);
     console.log("user disconnected");
     socket.disconnect();
