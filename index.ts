@@ -49,9 +49,14 @@ socketIO.on("connection", (socket) => {
   socket.on("user", (data: IUserDetails) => {
     console.log(`${data.name} just connected!`);
 
-    const { _id: userId, roomId: roomId } = data;
+    const { _id: userId, roomId: roomId, name: name } = data;
     socket.userId = userId!;
     socket.roomId = roomId;
+    socket.name = name
+
+    if(!socket.name || !data._id){
+      return;
+    }
 
     if (socketUsers[userId!]) {
       socket = socketUsers[userId!];
