@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { body } from "express-validator";
 import { IRoom } from "../interfaces/IRoom";
 import { RoomSchema } from "../models/roomSchema";
+import { RoomUsersSchema } from "../models/roomUsersSchema";
 
 const router = express.Router();
 
@@ -49,6 +50,18 @@ router.get("/getRoomDetails/:id", async (req: Request, res: Response) => {
       return res.status(404).json({ msg: "No room found" });
     }
     return res.json(room);
+  } catch (err: any) {
+    console.error(err.message);
+    return res.status(500).send("Something went wrong");
+  }
+});
+
+router.delete("/rooms/:roomId", async (req: Request, res: Response) => {
+  const roomId = req.params.roomId;
+  try {
+    await RoomSchema.findByIdAndDelete(roomId);
+    await RoomUsersSchema.deleteMany({ roomId: roomId });
+    res.json({ message: `Room with ID ${roomId} deleted` });
   } catch (err: any) {
     console.error(err.message);
     return res.status(500).send("Something went wrong");

@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import { connectDB } from "./src/config/database";
 import { IUserDetails } from "./interfaces/IUserDetails";
+import { IRoomUsers } from "./interfaces/IRoomUsers";
 
 const PORT = process.env.PORT || 4001;
 const app = express();
@@ -32,6 +33,7 @@ connectDB();
 app.use("/api/room", require("./routes/roomController"));
 app.use("/api/user", require("./routes/userController"));
 app.use("/api/issues", require("./routes/issuesController"));
+app.use("/api/roomusers", require("./routes/roomUsersController"));
 
 const socketIO = require("socket.io")(http, {
   cors: {
@@ -39,22 +41,22 @@ const socketIO = require("socket.io")(http, {
   }
 });
 
-let users: IUserDetails[] = [];
+let users: IRoomUsers[] = [];
 
 socketIO.on("connection", (socket) => {
   console.log(`${socket.id} just connected!`);
 
   const socketUsers = {};
 
-  socket.on("user", (data: IUserDetails) => {
-    console.log(`${data.name} just connected!`);
+  socket.on("user", (data: IRoomUsers) => {
+    console.log(`${data.userName} just connected!`);
 
-    const { _id: userId, roomId: roomId, name: name } = data;
+    const { _id: userId, roomId: roomId, userName: userName } = data;
     socket.userId = userId!;
     socket.roomId = roomId;
-    socket.name = name
+    socket.userName = userName;
 
-    if(!socket.name || !data._id){
+    if (!socket.userName || !data._id) {
       return;
     }
 
@@ -78,11 +80,11 @@ socketIO.on("connection", (socket) => {
     socketIO.to(data.roomId).emit("userResponse", roomUsers);
   });
 
-  socket.on("isVotedState", (data: IUserDetails) => {
+  socket.on("isVotedState", (data: IRoomUsers) => {
     socketIO.to(data.roomId).emit("isVotedResponse", data);
   });
 
-  socket.on("isUserVoted", (data: IUserDetails[]) => {
+  socket.on("isUserVoted", (data: IRoomUsers[]) => {
     socketIO.emit("isUserVotedResponse", data);
   });
 
@@ -96,6 +98,10 @@ socketIO.on("connection", (socket) => {
 
   socket.on("isIssuesSidebarOpen", (data) => {
     socketIO.to(data.roomId).emit("isIssuesSidebarOpenResponse", data);
+  });
+
+  socket.on("triggerRefetchIssues", (data) => {
+    socketIO.to(data.roomId).emit("triggerRefetchIssuesResponse", data);
   });
 
   socket.on("isActiveCard", (data) => {
