@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { body } from "express-validator";
 import { IUser } from "../interfaces/IUser";
 import { UserSchema } from "../models/userSchema";
+import { RoomUsersSchema } from "../models/roomUsersSchema";
 
 const router = express.Router();
 
@@ -119,6 +120,7 @@ router.delete("/deleteUser/:_id", async (req: Request, res: Response) => {
       return;
     }
     await user.remove();
+    await RoomUsersSchema.deleteMany({ userId: req.params._id });
     res.json({ msg: "User Deleted" });
   } catch (err: any) {
     console.error(err.message);
