@@ -44,10 +44,7 @@ const socketIO = require("socket.io")(http, {
 let users: IRoomUsers[] = [];
 
 socketIO.on("connection", (socket) => {
-  console.log(`${socket.id} just connected!`);
-
   const socketUsers = {};
-
   socket.on("user", (data: IRoomUsers) => {
     console.log(`${data.userName} just connected!`);
 
@@ -105,32 +102,15 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("isActiveCard", (data) => {
-    console.log(data, "isActiveCardOpenResponse");
     socketIO.to(data.roomId).emit("isActiveCardOpenResponse", data);
   });
-
-  // TODO: can't reset vote on leaving room, only do when vote session is completed.
-  // implement many to many relationship between each room and userId and userVote.
-
-  // socket.on("leaveRoom", async (data) => {
-  // try {
-  //   const response = await axios.put(
-  //     getBaseUrl(`user/resetVote/${data.userId}`)
-  //   );
-  //   console.log("API response:", response.data);
-  //   socket.emit("leaveRoomResponse", response.data);
-  // } catch (error) {
-  //   console.error("API request failed:", error);
-  // }
-  //   console.log(`${data.userName} just left the room!`);
-  // });
 
   socket.on("disconnect", () => {
     users = users.filter(
       (user) => !(user._id === socket.userId && user.roomId === socket.roomId)
     );
     socketIO.emit("userResponse", users);
-    console.log("user disconnected");
+    console.log(`user just disconnected`);
     socket.disconnect();
   });
 });
