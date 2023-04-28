@@ -16,7 +16,7 @@ const roomUsersSchema = new Schema({
   },
   currentVote: {
     type: Number,
-    default: 0
+    default: undefined
   },
   activeIssueId: {
     type: String,

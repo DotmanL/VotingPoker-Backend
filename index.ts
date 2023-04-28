@@ -105,6 +105,10 @@ socketIO.on("connection", (socket) => {
     socketIO.to(data.roomId).emit("isActiveCardOpenResponse", data);
   });
 
+  socket.on("updateActiveIssueId", (data) => {
+    socketIO.to(data.roomId).emit("updateActiveIssueIdResponse", data);
+  });
+
   socket.on("disconnect", () => {
     users = users.filter(
       (user) => !(user._id === socket.userId && user.roomId === socket.roomId)
