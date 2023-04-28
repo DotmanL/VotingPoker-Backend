@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { body } from "express-validator";
 import { IIssue, IIssueDocument } from "../interfaces/Issues";
 import { IssueSchema } from "../models/issueSchema";
+import { RoomUsersSchema } from "../models/roomUsersSchema";
 
 const router = express.Router();
 
@@ -157,6 +158,13 @@ router.delete("/deleteIssues", async (req: Request, res: Response) => {
       }
 
       await issueToDelete.delete();
+      await RoomUsersSchema.updateMany(
+        { activeIssueId: issueToDelete.id },
+        {
+          $unset: { activeIssueId: "" }
+        }
+      );
+
       const remainingIssues = await IssueSchema.find({
         roomId: issueToDelete.roomId
       }).sort("order");
