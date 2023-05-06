@@ -64,12 +64,12 @@ router.get("/getIssue/:_id", async (req: Request, res: Response) => {
 
 router.put("/updateIssue/:_id", async (req, res) => {
   const id = req.params._id;
-  const { storyPoints, name, isVoted, isActive } = req.body;
+  const { storyPoints, name, link, summary, isVoted, isActive } = req.body;
 
   try {
     const updatedIssue: IIssue | null = await IssueSchema.findByIdAndUpdate(
       id,
-      { storyPoints, name, isVoted, isActive },
+      { storyPoints, name, link, summary, isVoted, isActive },
       { new: true }
     );
 
