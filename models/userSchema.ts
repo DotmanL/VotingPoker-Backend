@@ -23,6 +23,9 @@ const userSchema = new Schema<IUser>({
   isConnected: {
     type: Boolean,
     default: false
+  },
+  jiraAccessToken: {
+    type: String
   }
 });
 
