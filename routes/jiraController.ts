@@ -64,8 +64,6 @@ router.get(
 
               user.jiraAccessToken = accessToken;
               await user.save();
-              console.log(secondToken);
-
               return res.json({ scope: secondToken.data.scope });
             } catch (error) {
               console.error(error);
