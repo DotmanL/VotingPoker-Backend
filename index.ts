@@ -6,7 +6,6 @@ import { IRoomUsers } from "./interfaces/IRoomUsers";
 const PORT = process.env.PORT || 4001;
 const app = express();
 const http = require("http").Server(app);
-const axios = require("axios");
 
 if (process.env.NODE_ENV !== "production") require("dotenv").config();
 

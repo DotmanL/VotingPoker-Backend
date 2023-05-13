@@ -26,6 +26,9 @@ const userSchema = new Schema<IUser>({
   },
   jiraAccessToken: {
     type: String
+  },
+  jiraRefreshToken: {
+    type: String
   }
 });
 

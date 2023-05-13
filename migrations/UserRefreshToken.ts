@@ -13,7 +13,7 @@ connection.once("open", async () => {
   const users = await UserSchema.find();
 
   for (const user of users) {
-    user.jiraAccessToken = ""; ///add jiraAccessToken field to the userSchema
+    user.jiraRefreshToken = ""; ///add jiraRefreshToken field to the userSchema
     await user.save();
   }
 
@@ -22,5 +22,3 @@ connection.once("open", async () => {
 });
 
 // NOTE:
-//run with node UserJiraAccessToken.ts, find a way to run this in the terminal without putting it in index
-// update packlage .json with the ts node comman for the file
