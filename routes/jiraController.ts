@@ -214,4 +214,42 @@ router.get("/jiraBasicSearch/:userId/:jqlQuery", async (req, res) => {
   }
 });
 
+router.get("/getProjects/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await UserSchema.findById(userId);
+    if (!user) {
+      console.error("No user with this id exist");
+    }
+
+    const siteDetails = await axios.get(
+      `https://api.atlassian.com/oauth/token/accessible-resources`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${user?.jiraAccessToken}`
+        }
+      }
+    );
+
+    const response = await axios.get(
+      `https://api.atlassian.com/ex/jira/${siteDetails.data[0].id}/rest/api/3/project/search`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${user?.jiraAccessToken}`
+        }
+      }
+    );
+
+    return res.json(response.data);
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .send("An error occurred while making the request to Jira");
+  }
+});
+
 module.exports = router;
