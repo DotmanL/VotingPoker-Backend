@@ -252,4 +252,118 @@ router.get("/getProjects/:userId", async (req, res) => {
   }
 });
 
+router.get("/getIssueTypes/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await UserSchema.findById(userId);
+    if (!user) {
+      console.error("No user with this id exist");
+    }
+
+    const siteDetails = await axios.get(
+      `https://api.atlassian.com/oauth/token/accessible-resources`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${user?.jiraAccessToken}`
+        }
+      }
+    );
+
+    const response = await axios.get(
+      `https://api.atlassian.com/ex/jira/${siteDetails.data[0].id}/rest/api/3/issuetype`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${user?.jiraAccessToken}`
+        }
+      }
+    );
+
+    return res.json(response.data);
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .send("An error occurred while making the request to Jira");
+  }
+});
+
+router.get("/getMyFilters/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await UserSchema.findById(userId);
+    if (!user) {
+      console.error("No user with this id exist");
+    }
+
+    const siteDetails = await axios.get(
+      `https://api.atlassian.com/oauth/token/accessible-resources`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${user?.jiraAccessToken}`
+        }
+      }
+    );
+
+    const response = await axios.get(
+      `https://api.atlassian.com/ex/jira/${siteDetails.data[0].id}/rest/api/3/filter/my`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${user?.jiraAccessToken}`
+        }
+      }
+    );
+
+    return res.json(response.data);
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .send("An error occurred while making the request to Jira");
+  }
+});
+
+router.get("/getFields/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await UserSchema.findById(userId);
+    if (!user) {
+      console.error("No user with this id exist");
+    }
+
+    const siteDetails = await axios.get(
+      `https://api.atlassian.com/oauth/token/accessible-resources`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${user?.jiraAccessToken}`
+        }
+      }
+    );
+
+    const response = await axios.get(
+      `https://api.atlassian.com/ex/jira/${siteDetails.data[0].id}/rest/api/3/field`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${user?.jiraAccessToken}`
+        }
+      }
+    );
+
+    return res.json(response.data);
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .send("An error occurred while making the request to Jira");
+  }
+});
+
 module.exports = router;

@@ -120,6 +120,22 @@ router.put("/resetVote/:_id", async (req: Request, res: Response) => {
   }
 });
 
+router.put("/revokeJiraAccess/:_id", async (req: Request, res: Response) => {
+  try {
+    const updatedUser = await UserSchema.findOne({ _id: req.params._id });
+    if (!updatedUser) {
+      return;
+    }
+    updatedUser.jiraAccessToken = "";
+    updatedUser.jiraRefreshToken = "";
+    await updatedUser.save();
+    return res.json(updatedUser);
+  } catch (err: any) {
+    console.error(err.message);
+    return res.status(500).send("Something went wrong");
+  }
+});
+
 router.delete("/deleteUser/:_id", async (req: Request, res: Response) => {
   try {
     const user = await UserSchema.findById(req.params._id);
