@@ -310,7 +310,7 @@ router.get("/getMyFilters/:userId", async (req, res) => {
     );
 
     const response = await axios.get(
-      `https://api.atlassian.com/ex/jira/${siteDetails.data[0].id}/rest/api/3/filter/search`,
+      `https://api.atlassian.com/ex/jira/${siteDetails.data[0].id}/rest/api/3/filter/search?expand=description,owner,jql`,
       {
         headers: {
           Accept: "application/json",
