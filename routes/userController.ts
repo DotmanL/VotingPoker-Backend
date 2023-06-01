@@ -16,7 +16,7 @@ router.post(
       });
 
       const userDetails = await user.save();
-      res.json(userDetails);
+      return res.json(userDetails);
     } catch (err: any) {
       console.error(err.message);
       return res.status(500).send("Something went wrong");
@@ -72,8 +72,14 @@ router.get("/usersByRoom/:roomId", async (req: Request, res: Response) => {
 // update user fields endpoint - use to replace localStorage SetItem
 
 router.put("/updateUser/:_id", async (req: Request, res: Response) => {
-  const { name, currentVote, currentRoomId, votedState, isConnected } =
-    req.body;
+  const {
+    name,
+    currentVote,
+    currentRoomId,
+    votedState,
+    jiraAccessToken,
+    isConnected
+  } = req.body;
 
   const userFields = {
     _id: req.params._id,
@@ -81,6 +87,7 @@ router.put("/updateUser/:_id", async (req: Request, res: Response) => {
     currentVote,
     currentRoomId,
     votedState,
+    jiraAccessToken,
     isConnected
   };
 
@@ -105,6 +112,22 @@ router.put("/resetVote/:_id", async (req: Request, res: Response) => {
     }
     updatedUser.currentVote = undefined;
     updatedUser.votedState = false;
+    await updatedUser.save();
+    return res.json(updatedUser);
+  } catch (err: any) {
+    console.error(err.message);
+    return res.status(500).send("Something went wrong");
+  }
+});
+
+router.put("/revokeJiraAccess/:_id", async (req: Request, res: Response) => {
+  try {
+    const updatedUser = await UserSchema.findOne({ _id: req.params._id });
+    if (!updatedUser) {
+      return;
+    }
+    updatedUser.jiraAccessToken = "";
+    updatedUser.jiraRefreshToken = "";
     await updatedUser.save();
     return res.json(updatedUser);
   } catch (err: any) {

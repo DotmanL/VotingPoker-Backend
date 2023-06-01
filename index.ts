@@ -1,13 +1,11 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
 import { connectDB } from "./src/config/database";
-import { IUserDetails } from "./interfaces/IUserDetails";
 import { IRoomUsers } from "./interfaces/IRoomUsers";
 
 const PORT = process.env.PORT || 4001;
 const app = express();
 const http = require("http").Server(app);
-const axios = require("axios");
 
 if (process.env.NODE_ENV !== "production") require("dotenv").config();
 
@@ -34,6 +32,7 @@ app.use("/api/room", require("./routes/roomController"));
 app.use("/api/user", require("./routes/userController"));
 app.use("/api/issues", require("./routes/issuesController"));
 app.use("/api/roomusers", require("./routes/roomUsersController"));
+app.use("/api/jira", require("./routes/jiraController"));
 
 const socketIO = require("socket.io")(http, {
   cors: {
