@@ -366,4 +366,51 @@ router.get("/getFields/:userId", async (req, res) => {
   }
 });
 
+router.get("/updateStoryPoints/:userId/:issueId", async (req, res) => {
+  try {
+    const { userId, issueId } = req.params;
+    const fieldValue = req.query.fieldValue as string;
+
+    const user = await UserSchema.findById(userId);
+    if (!user) {
+      console.error("No user with this id exist");
+    }
+
+    const siteDetails = await axios.get(
+      `https://api.atlassian.com/oauth/token/accessible-resources`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${user?.jiraAccessToken}`
+        }
+      }
+    );
+
+    const fieldId = user?.storyPointsField!;
+    const requestBody = {
+      fields: {
+        [fieldId]: parseInt(fieldValue, 10)
+      }
+    };
+
+    const response = await axios.put(
+      `https://api.atlassian.com/ex/jira/${siteDetails.data[0].id}/rest/api/3/issue/${issueId}`,
+      requestBody,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${user?.jiraAccessToken}`
+        }
+      }
+    );
+
+    return res.json(response.data);
+  } catch (error: any) {
+    console.error(error);
+    return res
+      .status(500)
+      .send("An error occurred while making the request to Jira");
+  }
+});
+
 module.exports = router;

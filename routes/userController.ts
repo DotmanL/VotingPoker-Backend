@@ -78,6 +78,7 @@ router.put("/updateUser/:_id", async (req: Request, res: Response) => {
     currentRoomId,
     votedState,
     jiraAccessToken,
+    storyPointsField,
     isConnected
   } = req.body;
 
@@ -88,6 +89,7 @@ router.put("/updateUser/:_id", async (req: Request, res: Response) => {
     currentRoomId,
     votedState,
     jiraAccessToken,
+    storyPointsField,
     isConnected
   };
 

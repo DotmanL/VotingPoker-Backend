@@ -19,7 +19,8 @@ router.post(
             link: issue.link,
             name: issue.name,
             summary: issue.summary,
-            order: issue.order
+            order: issue.order,
+            jiraIssueId: issue.jiraIssueId
           })
       );
       const savedIssues: IIssueDocument[] = await IssueSchema.insertMany(
