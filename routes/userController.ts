@@ -6,6 +6,17 @@ import { RoomUsersSchema } from "../models/roomUsersSchema";
 
 const router = express.Router();
 
+interface UserFields {
+  _id: string;
+  name?: string;
+  currentVote?: string;
+  currentRoomId?: string;
+  votedState?: string;
+  jiraAccessToken?: string;
+  storyPointsField?: string;
+  isConnected?: boolean;
+}
+
 router.post(
   "/createUser",
   [body("name").not().isEmpty()],
@@ -82,16 +93,17 @@ router.put("/updateUser/:_id", async (req: Request, res: Response) => {
     isConnected
   } = req.body;
 
-  const userFields = {
-    _id: req.params._id,
-    name,
-    currentVote,
-    currentRoomId,
-    votedState,
-    jiraAccessToken,
-    storyPointsField,
-    isConnected
+  const userFields: UserFields = {
+    _id: req.params._id
   };
+
+  if (name) userFields.name = name;
+  if (currentVote) userFields.currentVote = currentVote;
+  if (currentRoomId) userFields.currentRoomId = currentRoomId;
+  if (votedState) userFields.votedState = votedState;
+  if (jiraAccessToken) userFields.jiraAccessToken = jiraAccessToken;
+  if (storyPointsField) userFields.storyPointsField = storyPointsField;
+  if (isConnected) userFields.isConnected = isConnected;
 
   try {
     let updatedUser = await UserSchema.findOneAndUpdate(
@@ -130,6 +142,7 @@ router.put("/revokeJiraAccess/:_id", async (req: Request, res: Response) => {
     }
     updatedUser.jiraAccessToken = "";
     updatedUser.jiraRefreshToken = "";
+    updatedUser.storyPointsField = "";
     await updatedUser.save();
     return res.json(updatedUser);
   } catch (err: any) {
