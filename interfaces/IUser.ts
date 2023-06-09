@@ -8,4 +8,5 @@ export interface IUser extends IBase {
   isConnected?: boolean;
   jiraAccessToken?: string;
   jiraRefreshToken?: string;
+  storyPointsField?: string;
 }

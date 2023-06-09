@@ -9,4 +9,5 @@ export interface IIssueDocument extends Document {
   order?: number;
   isVoted?: boolean;
   isActive?: boolean;
+  jiraIssueId?: string;
 }

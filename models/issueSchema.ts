@@ -33,6 +33,10 @@ const issueSchema = new Schema<IIssue>({
   isActive: {
     type: Boolean,
     default: false
+  },
+  jiraIssueId: {
+    type: String,
+    default: null
   }
 });
 

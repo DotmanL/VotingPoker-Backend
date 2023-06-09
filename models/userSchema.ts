@@ -29,6 +29,9 @@ const userSchema = new Schema<IUser>({
   },
   jiraRefreshToken: {
     type: String
+  },
+  storyPointsField: {
+    type: String
   }
 });
 
