@@ -1,4 +1,5 @@
 import { IBase } from "./IBase";
+import { RoleType } from "./RoleEnum";
 
 export interface IUser extends IBase {
   name: string;
@@ -9,4 +10,6 @@ export interface IUser extends IBase {
   jiraAccessToken?: string;
   jiraRefreshToken?: string;
   storyPointsField?: string;
+  cardColor?: string;
+  role?: RoleType;
 }

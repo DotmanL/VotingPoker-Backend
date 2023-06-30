@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import { IUser } from "../interfaces/IUser";
+import { RoleType } from "../interfaces/RoleEnum";
 
 const userSchema = new Schema<IUser>({
   name: {
@@ -32,6 +33,14 @@ const userSchema = new Schema<IUser>({
   },
   storyPointsField: {
     type: String
+  },
+  cardColor: {
+    type: String,
+    default: "#67A3EE"
+  },
+  role: {
+    type: String,
+    default: RoleType.Player
   }
 });
 

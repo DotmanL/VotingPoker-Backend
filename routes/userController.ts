@@ -3,6 +3,7 @@ import { body } from "express-validator";
 import { IUser } from "../interfaces/IUser";
 import { UserSchema } from "../models/userSchema";
 import { RoomUsersSchema } from "../models/roomUsersSchema";
+import { RoleType } from "../interfaces/RoleEnum";
 
 const router = express.Router();
 
@@ -15,6 +16,8 @@ interface UserFields {
   jiraAccessToken?: string;
   storyPointsField?: string;
   isConnected?: boolean;
+  cardColor?: string;
+  role?: RoleType;
 }
 
 router.post(
@@ -90,7 +93,9 @@ router.put("/updateUser/:_id", async (req: Request, res: Response) => {
     votedState,
     jiraAccessToken,
     storyPointsField,
-    isConnected
+    isConnected,
+    cardColor,
+    role
   } = req.body;
 
   const userFields: UserFields = {
@@ -104,6 +109,8 @@ router.put("/updateUser/:_id", async (req: Request, res: Response) => {
   if (jiraAccessToken) userFields.jiraAccessToken = jiraAccessToken;
   if (storyPointsField) userFields.storyPointsField = storyPointsField;
   if (isConnected) userFields.isConnected = isConnected;
+  if (cardColor) userFields.cardColor = cardColor;
+  if (role) userFields.role = role;
 
   try {
     let updatedUser = await UserSchema.findOneAndUpdate(
