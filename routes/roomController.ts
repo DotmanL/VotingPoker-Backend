@@ -18,7 +18,8 @@ router.post(
       const room = new RoomSchema<IRoom>({
         roomId: req.body.roomId,
         name: req.body.name,
-        votingSystem: req.body.votingSystem
+        votingSystem: req.body.votingSystem,
+        companyName: req.body.companyName
       });
 
       const roomDetails = await room.save();
@@ -30,9 +31,12 @@ router.post(
   }
 );
 
-router.get("/getRooms", async (req: Request, res: Response) => {
+router.get("/getRooms/:companyName", async (req: Request, res: Response) => {
   try {
-    const rooms = await RoomSchema.find().sort({ date: -1 });
+    const { companyName } = req.params;
+    const rooms = await RoomSchema.find({ companyName: companyName }).sort({
+      date: -1
+    });
     if (!rooms) {
       return res.status(404).json({ msg: "No rooms found" });
     }

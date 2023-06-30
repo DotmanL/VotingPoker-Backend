@@ -14,6 +14,9 @@ const roomSchema = new Schema<IRoom>({
   },
   votingSystem: {
     type: Number
+  },
+  companyName: {
+    type: String
   }
 });
 
