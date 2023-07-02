@@ -37,10 +37,6 @@ const userSchema = new Schema<IUser>({
   cardColor: {
     type: String,
     default: "#67A3EE"
-  },
-  role: {
-    type: String,
-    default: RoleType.Player
   }
 });
 

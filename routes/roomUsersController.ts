@@ -56,7 +56,8 @@ router.put(
   "/roomUsers/:roomId/:userId",
   async (req: Request, res: Response) => {
     const { roomId, userId } = req.params;
-    const { currentVote, activeIssueId, votedState } = req.body;
+    const { currentVote, activeIssueId, votedState, cardColor, role } =
+      req.body;
 
     try {
       const updatedUserRoom = await RoomUsersSchema.findOneAndUpdate(
@@ -64,7 +65,9 @@ router.put(
         {
           currentVote: currentVote,
           activeIssueId: activeIssueId,
-          votedState: votedState
+          votedState: votedState,
+          cardColor: cardColor,
+          role: role
         },
         { new: true, upsert: true }
       );
@@ -78,13 +81,15 @@ router.put(
 
 router.put("/roomUsers/:roomId", async (req: Request, res: Response) => {
   const { roomId } = req.params;
-  const { activeIssueId } = req.body;
+  const { activeIssueId, cardColor, role } = req.body;
 
   try {
     const updatedUserRoom = await RoomUsersSchema.updateMany(
       { roomId: roomId },
       {
-        activeIssueId: activeIssueId
+        activeIssueId: activeIssueId,
+        cardColor: cardColor,
+        role: role
       },
       { new: true, upsert: true }
     );

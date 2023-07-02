@@ -1,5 +1,6 @@
 import mongoose, { Schema, model } from "mongoose";
-import { IUser } from "../interfaces/IUser";
+import { RoleType } from "../interfaces/RoleEnum";
+import { IRoomUsers } from "../interfaces/IRoomUsers";
 
 const roomUsersSchema = new Schema({
   userId: {
@@ -26,8 +27,16 @@ const roomUsersSchema = new Schema({
   votedState: {
     type: Boolean,
     default: false
+  },
+  cardColor: {
+    type: String,
+    default: "#67A3EE"
+  },
+  role: {
+    type: String,
+    default: RoleType.Player
   }
 });
 
-const RoomUsersSchema = model<IUser>("RoomUsers", roomUsersSchema);
+const RoomUsersSchema = model<IRoomUsers>("RoomUsers", roomUsersSchema);
 export { RoomUsersSchema };

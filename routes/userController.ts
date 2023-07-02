@@ -17,7 +17,6 @@ interface UserFields {
   storyPointsField?: string;
   isConnected?: boolean;
   cardColor?: string;
-  role?: RoleType;
 }
 
 router.post(
@@ -110,7 +109,6 @@ router.put("/updateUser/:_id", async (req: Request, res: Response) => {
   if (storyPointsField) userFields.storyPointsField = storyPointsField;
   if (isConnected) userFields.isConnected = isConnected;
   if (cardColor) userFields.cardColor = cardColor;
-  if (role) userFields.role = role;
 
   try {
     let updatedUser = await UserSchema.findOneAndUpdate(

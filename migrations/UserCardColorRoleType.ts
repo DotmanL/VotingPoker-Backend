@@ -14,10 +14,25 @@ connection.once("open", async () => {
 
   for (const user of users) {
     user.cardColor = "#67A3EE";
-    user.role = RoleType.Player;
     await user.save();
   }
 
   console.log("Migration complete");
   process.exit();
 });
+
+// connection.once("open", async () => {
+//   console.log("Connected to MongoDB");
+
+//   const roomUsers = await RoomUsersSchema.find();
+//   console.log(roomUsers);
+
+//   for (const roomUser of roomUsers) {
+//     roomUser.cardColor = "#67A3EE";
+//     roomUser.role = RoleType.Player;
+//     await roomUser.save();
+//   }
+
+//   console.log("Migration complete");
+//   process.exit();
+// });

@@ -1,4 +1,5 @@
 import { IBase } from "./IBase";
+import { RoleType } from "./RoleEnum";
 
 export interface IRoomUsers extends IBase {
   userId: string;
@@ -7,5 +8,7 @@ export interface IRoomUsers extends IBase {
   currentVote?: number;
   activeIssueId?: string;
   votedState?: boolean;
+  cardColor?: string;
+  role?: RoleType;
   [key: string]: any;
 }
