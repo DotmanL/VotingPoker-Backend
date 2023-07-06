@@ -84,6 +84,10 @@ socketIO.on("connection", (socket) => {
     socketIO.emit("isUserVotedResponse", data);
   });
 
+  socket.on("endCelebration", (data) => {
+    socketIO.to(data.roomId).emit("endCelebrationResponse", data);
+  });
+
   socket.on("votes", (data) => {
     socketIO.to(data.roomId).emit("votesResponse", data.allVotes);
   });
