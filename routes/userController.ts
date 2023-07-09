@@ -24,6 +24,13 @@ router.post(
   [body("name").not().isEmpty()],
   async (req: Request, res: Response) => {
     try {
+      const existingUser = await UserSchema.findOne({ name: req.body.name });
+      if (existingUser) {
+        return res
+          .status(400)
+          .json({ error: "User with the same name already exists" });
+      }
+
       const user = new UserSchema<IUser>({
         name: req.body.name
       });
