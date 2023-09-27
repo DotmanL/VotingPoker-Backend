@@ -5,7 +5,7 @@
       "node"
     ],
     "outDir": "./dist" /* Specify an output folder for all emitted files. */,
-    "typeRoots": ["./typings"],
+    "typeRoots": ["./node_modules/@types"],
     "noImplicitAny": false,
     /* Projects */
     // "incremental": true,                              /* Enable incremental compilation */
