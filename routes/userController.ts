@@ -24,12 +24,12 @@ router.post(
   [body("name").not().isEmpty()],
   async (req: Request, res: Response) => {
     try {
-      const existingUser = await UserSchema.findOne({ name: req.body.name });
-      if (existingUser) {
-        return res
-          .status(400)
-          .json({ error: "User with the same name already exists" });
-      }
+      // const existingUser = await UserSchema.findOne({ name: req.body.name });
+      // if (existingUser) {
+      //   return res
+      //     .status(400)
+      //     .json({ error: "User with the same name already exists" });
+      // }
 
       const user = new UserSchema<IUser>({
         name: req.body.name
@@ -43,6 +43,19 @@ router.post(
     }
   }
 );
+
+router.get("/getCurrentUser/:id", async (req: Request, res: Response) => {
+  try {
+    const user = await UserSchema.findOne({ _id: req.params.id });
+    if (!user) {
+      return res.status(404).json({ msg: "No user found" });
+    }
+    return res.json(user);
+  } catch (err: any) {
+    console.error(err.message);
+    return res.status(500).send("Something went wrong");
+  }
+});
 
 router.get(
   "/getCurrentUserByName/:name",
