@@ -112,6 +112,12 @@ socketIO.on("connection", (socket) => {
     socketIO.to(data.roomId).emit("updateActiveIssueIdResponse", data);
   });
 
+  socket.on("sendRoomMessage", (data) => {
+    console.log(data, "sendRoomMessageData");
+
+    socketIO.to(data.roomId).emit("sendRoomMessageResponse", data);
+  });
+
   socket.on("disconnect", () => {
     users = users.filter(
       (user) => !(user._id === socket.userId && user.roomId === socket.roomId)
