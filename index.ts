@@ -113,8 +113,6 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("sendRoomMessage", (data) => {
-    console.log(data, "sendRoomMessageData");
-
     socketIO.to(data.roomId).emit("sendRoomMessageResponse", data);
   });
 
