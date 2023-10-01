@@ -101,9 +101,6 @@ router.get("/usersByRoom/:roomId", async (req: Request, res: Response) => {
   }
 });
 
-// get all room users - to use when resetting voting session
-// update user fields endpoint - use to replace localStorage SetItem
-
 router.put("/updateUser/:_id", async (req: Request, res: Response) => {
   const {
     name,
@@ -113,14 +110,14 @@ router.put("/updateUser/:_id", async (req: Request, res: Response) => {
     jiraAccessToken,
     storyPointsField,
     isConnected,
-    cardColor,
-    role
+    cardColor
   } = req.body;
 
   const userFields: UserFields = {
     _id: req.params._id
   };
 
+  //Todo: find a better way to do this
   if (name) userFields.name = name;
   if (currentVote) userFields.currentVote = currentVote;
   if (currentRoomId) userFields.currentRoomId = currentRoomId;
