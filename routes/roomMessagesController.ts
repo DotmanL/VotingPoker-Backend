@@ -26,8 +26,11 @@ router.post(
           userId: messages[0].userId,
           userName: messages[0].userName,
           message: encryptedMessage,
+          messageTime: messages[0].messageTime,
           iv: iv
         };
+
+        console.log(userMessage, "um");
 
         existingRoomMessages.messages.push(userMessage);
         await existingRoomMessages.save();
@@ -40,6 +43,7 @@ router.post(
         userId: messages[0].userId,
         userName: messages[0].userName,
         message: encryptedMessage,
+        messageTime: messages[0].messageTime,
         iv: iv
       };
 
@@ -75,6 +79,7 @@ router.get("/getRoomMessages/:roomId", async (req: Request, res: Response) => {
     const decryptedMessages = roomMessage.messages.map((message) => ({
       userId: message.userId,
       userName: message.userName,
+      messageTime: message.messageTime,
       message: decryptMessage(message.message, message.iv)
     }));
 

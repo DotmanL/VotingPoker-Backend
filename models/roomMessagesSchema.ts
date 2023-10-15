@@ -6,6 +6,7 @@ const userMessageSchema = new Schema({
   userId: String,
   userName: String,
   message: String,
+  messageTime: Number,
   iv: String
 });
 
