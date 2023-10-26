@@ -5,8 +5,8 @@ const roomSchema = new Schema<IRoom>({
   name: {
     type: String,
     trim: true,
-    required: true,
-    unique: true
+    required: true
+    // unique: true
   },
   roomId: {
     type: String,
