@@ -1,3 +1,5 @@
+import { IBase } from "./IBase";
+
 export interface IUserMessage {
   userId: string;
   userName: string;
@@ -6,7 +8,7 @@ export interface IUserMessage {
   iv: string;
 }
 
-export interface IRoomMessage {
+export interface IRoomMessage extends IBase {
   roomId: string;
   roomName?: string;
   messages: IUserMessage[];

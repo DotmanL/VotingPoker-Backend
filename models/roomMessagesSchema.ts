@@ -10,19 +10,22 @@ const userMessageSchema = new Schema({
   iv: String
 });
 
-const roomMessagesSchema = new Schema<IRoomMessage>({
-  roomId: {
-    type: String,
-    ref: "Room",
-    required: true
+const roomMessagesSchema = new Schema<IRoomMessage>(
+  {
+    roomId: {
+      type: String,
+      ref: "Room",
+      required: true
+    },
+    roomName: {
+      type: String
+    },
+    messages: {
+      type: [userMessageSchema]
+    }
   },
-  roomName: {
-    type: String
-  },
-  messages: {
-    type: [userMessageSchema]
-  }
-});
+  { timestamps: true }
+);
 
 function encryptMessage(message: string) {
   const iv = crypto.randomBytes(16);

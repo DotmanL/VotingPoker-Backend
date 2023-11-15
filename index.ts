@@ -1,7 +1,7 @@
-import express, { Request, Response } from "express";
 import cors from "cors";
-import { connectDB } from "./src/config/database";
+import express, { Request, Response } from "express";
 import { IRoomUsers } from "./interfaces/IRoomUsers";
+import { connectDB } from "./src/config/database";
 
 const PORT = process.env.PORT || 4001;
 const app = express();
